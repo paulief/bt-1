@@ -33,12 +33,13 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('PlaylistsCtrl', ['$scope', '$http', 'btDataService', 
-  function($scope, $http, btDataService) {
+.controller('PlaylistsCtrl', ['$scope', '$http', 'btDataService', function($scope, $http, btDataService) {
 
-    btDataService.get(function(data) {
-      $scope.playlists = data;
-    })
+  var setPlaylists = function(data) {
+    $scope.playlists = data;
+  }
+
+  btDataService.get(setPlaylists);
 }])
 
 .controller('PlaylistCtrl', function($scope, $stateParams) {
