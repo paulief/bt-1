@@ -1,0 +1,9 @@
+<ion-view view-title="Tracks">
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat="track in tracks" href="#/app/tracks/{{track.id}}">
+        {{track.lat}}
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
