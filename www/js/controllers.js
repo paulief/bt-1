@@ -39,6 +39,7 @@ angular.module('starter.controllers', [])
     $scope.tracks = data;
   }
 
+  //passing setTracks as a callback
   btDataService.get(setTracks);
 }])
 
