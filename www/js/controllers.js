@@ -33,15 +33,13 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('PlaylistsCtrl', function($scope, $http) {
-	console.log("Logging");
-	$http.get('/www/playlists.json').success(function(data) {
-		alert("Called get method");
-	    $scope.playlists = data;
-	}).error(function(data) {
-		console.log("error");
-	});
-})
+.controller('PlaylistsCtrl', ['$scope', '$http', 'btDataService', 
+  function($scope, $http, btDataService) {
+
+    btDataService.get(function(data) {
+      $scope.playlists = data;
+    })
+}])
 
 .controller('PlaylistCtrl', function($scope, $stateParams) {
 	
