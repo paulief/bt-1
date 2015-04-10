@@ -36,13 +36,42 @@ angular.module('starter.controllers', [])
 .controller('TracksCtrl', ['$scope', '$http', 'btDataService', function($scope, $http, btDataService) {
 
   var setTracks = function(data) {
-    $scope.tracks = data;
-  }
+    if (data) {
+    	$scope.tracks = data;
+    } else {
+    	$scope.tracks = [];
+    }
+  };
+  
+  $scope.refreshTracks = function() {
+	  console.log(btDataService.getAllTracks(setTracks));
+	  setTracks(btDataService.getAllTracks(setTracks));
+  };
+
 
   //passing setTracks as a callback
-  btDataService.get(setTracks);
+  setTracks(btDataService.getAllTracks(setTracks));
+  
+  $scope.newTrack = function() {
+	  console.log(new Date().getTime());
+	  var newTrackToAdd = btDataService.newTrack(new Date().getTime());
+	  
+	  $scope.tracks.push(newTrackToAdd);
+	  btDataService.saveAllTracks($scope.tracks);
+	  console.log(btDataService.getAllTracks(setTracks));
+	  setTracks(btDataService.getAllTracks(setTracks));
+  };
+  
+  $scope.selectTrack = function(track) {
+	  console.log(track);
+	  btDataService.setActiveTrack(track);
+  };
 }])
 
-.controller('TrackDispCtrl', function($scope, $stateParams) {
+.controller('TrackDispCtrl', ['$scope', '$stateParams', 'btDataService', function($scope, $stateParams, btDataService) {
+	console.log(btDataService.getActiveTrack());
 	
-});
+	$scope.selectedTrack = btDataService.getActiveTrack();
+	
+	
+}]);
