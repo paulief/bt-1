@@ -33,16 +33,45 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('PlaylistsCtrl', function($scope, $http) {
-	console.log("Logging");
-	$http.get('/www/playlists.json').success(function(data) {
-		alert("Called get method");
-	    $scope.playlists = data;
-	}).error(function(data) {
-		console.log("error");
-	});
-})
+.controller('TracksCtrl', ['$scope', '$http', 'btDataService', function($scope, $http, btDataService) {
 
-.controller('PlaylistCtrl', function($scope, $stateParams) {
+  var setTracks = function(data) {
+    if (data) {
+    	$scope.tracks = data;
+    } else {
+    	$scope.tracks = [];
+    }
+  };
+  
+  $scope.refreshTracks = function() {
+	  console.log(btDataService.getAllTracks(setTracks));
+	  setTracks(btDataService.getAllTracks(setTracks));
+  };
+
+
+  //passing setTracks as a callback
+  setTracks(btDataService.getAllTracks(setTracks));
+  
+  $scope.newTrack = function() {
+	  console.log(new Date().getTime());
+	  var newTrackToAdd = btDataService.newTrack(new Date().getTime());
+	  
+	  $scope.tracks.push(newTrackToAdd);
+	  btDataService.saveAllTracks($scope.tracks);
+	  console.log(btDataService.getAllTracks(setTracks));
+	  setTracks(btDataService.getAllTracks(setTracks));
+  };
+  
+  $scope.selectTrack = function(track) {
+	  console.log(track);
+	  btDataService.setActiveTrack(track);
+  };
+}])
+
+.controller('TrackDispCtrl', ['$scope', '$stateParams', 'btDataService', function($scope, $stateParams, btDataService) {
+	console.log(btDataService.getActiveTrack());
 	
-});
+	$scope.selectedTrack = btDataService.getActiveTrack();
+	
+	
+}]);
