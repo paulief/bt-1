@@ -46,3 +46,28 @@ btServices.factory('btDataService', ['$http', function($http) {
 		}
 	};
 }]);
+
+btServices.factory('btTimerService', function() {
+  return {
+    startFunc: function(func) {
+     this.timer = setInterval(func, 5000);
+     console.log("timer started");
+    },
+    timer: {},
+    stopFunc: function() {
+      clearInterval(this.timer);
+    }
+  };	
+});
+
+btServices.factory('btGeoService', function() {
+	return {
+		getLocation: function(callback) {
+			var onSuccess = function(loc) {
+				callback(loc.coords.latitude, loc.coords.longitude);
+			};
+
+			navigator.geolocation.getCurrentPosition(onSuccess, onError);
+		}
+	}
+});

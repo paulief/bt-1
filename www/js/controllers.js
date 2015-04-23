@@ -33,7 +33,10 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('TracksCtrl', ['$scope', '$http', 'btDataService', function($scope, $http, btDataService) {
+.controller('TracksCtrl', ['$scope', '$http', 'btDataService', 'btTimerService', 
+  function($scope, $http, btDataService, btTimerService) {
+
+  var currentTrack;
 
   var setTracks = function(data) {
     if (data) {
@@ -60,6 +63,54 @@ angular.module('starter.controllers', [])
 	  btDataService.saveAllTracks($scope.tracks);
 	  console.log(btDataService.getAllTracks(setTracks));
 	  setTracks(btDataService.getAllTracks(setTracks));
+  };
+
+  $scope.startNewTrack = function() {
+    var trackStartTime = new Date().getTime();
+    console.log("New track started at " + trackStartTime);
+
+    currentTrack = btDataService.newTrack(trackStartTime);
+
+    //make the new track the active track
+    btDataService.setActiveTrack(currentTrack);
+
+    //starting a timer that records location every set # of minutes
+    btTimerService.startFunc(triggerLocationCheck);
+  };
+
+  $scope.stopAndSaveCurrentTrack = function() {
+    btTimerService.stopFunc();
+  }
+
+  var triggerLocationCheck = function() {
+    navigator.geolocation.getCurrentPosition(recordLocation, handleLocError, {maximumAge:300000});
+  }
+
+  var recordLocation = function(loc) {
+    console.log("Location found");
+    //var activeTrack = btDataService.getActiveTrack();
+    var currLocObject = getLocationObject(loc);
+
+    currentTrack.trackEvents.push(currLocObject);
+    console.log("currently saved locs - " + currentTrack.trackEvents);
+
+    btDataService.setActiveTrack(currentTrack);
+  };
+
+  var handleLocError = function(error) {
+    console.log('code: '    + error.code    + '\n' +
+          'message: ' + error.message + '\n');
+  }
+
+  var getLocationObject = function(loc) {
+    var locationTime = new Date().getTime();
+    var _lat = loc.coords.latitude;
+    var _lon = loc.coords.longitude;
+    return {
+      locTime: locationTime,
+      lat: _lat,
+      lon: _lon
+    };
   };
   
   $scope.selectTrack = function(track) {
