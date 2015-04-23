@@ -80,6 +80,8 @@ angular.module('starter.controllers', [])
 
   $scope.stopAndSaveCurrentTrack = function() {
     btTimerService.stopFunc();
+    var newTrackToSave = btDataService.getActiveTrack();
+    btDataService.saveNewTrack(newTrackToSave);
   }
 
   var triggerLocationCheck = function() {

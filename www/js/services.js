@@ -19,6 +19,14 @@ btServices.factory('btDataService', ['$http', function($http) {
 		saveAllTracks: function(tracks) {
 			window.localStorage['allTracks'] = angular.toJson(tracks);
 		},
+		saveNewTrack: function(newTrack) {
+			var allTracks = angular.fromJson(window.localStorage['allTracks']);
+			if (!allTracks) {
+				allTracks = [];
+			};
+			allTracks.push(newTrack);
+			window.localStorage['allTracks'] = angular.toJson(allTracks);
+		},
 		newTrack: function(trackStartTime) {
 			return {
 				id: trackStartTime,
