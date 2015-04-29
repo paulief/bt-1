@@ -1,4 +1,4 @@
-angular.module('starter.controllers', [])
+angular.module('btControllers', [])
 
 .controller('AppCtrl', function($scope, $ionicModal, $timeout) {
   // Form data for the login modal
@@ -33,19 +33,23 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('TracksCtrl', ['$scope', '$http', 'btDataService', 'btTimerService', 
+.controller('TrackingCtrl', ['$scope', '$http', 'btDataService', 'btTimerService', 
   function($scope, $http, btDataService, btTimerService) {
+
+  console.log("Controller loaded");
 
   var currentTrack;
 
   var setTracks = function(data) {
     if (data) {
     	$scope.tracks = data;
+      console.log(data);
     } else {
     	$scope.tracks = [];
     }
   };
   
+  //Not used - ideally every time the template loads this is called
   $scope.refreshTracks = function() {
 	  console.log(btDataService.getAllTracks(setTracks));
 	  setTracks(btDataService.getAllTracks(setTracks));
@@ -82,6 +86,8 @@ angular.module('starter.controllers', [])
     btTimerService.stopFunc();
     var newTrackToSave = btDataService.getActiveTrack();
     btDataService.saveNewTrack(newTrackToSave);
+    //setTracks(btDataService.getAllTracks(setTracks));
+    $scope.tracks.push(newTrackToSave);
   }
 
   var triggerLocationCheck = function() {
@@ -92,10 +98,7 @@ angular.module('starter.controllers', [])
     console.log("Location found");
     //var activeTrack = btDataService.getActiveTrack();
     var currLocObject = getLocationObject(loc);
-
     currentTrack.trackEvents.push(currLocObject);
-    console.log("currently saved locs - " + currentTrack.trackEvents);
-
     btDataService.setActiveTrack(currentTrack);
   };
 

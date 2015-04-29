@@ -1,11 +1,7 @@
 <ion-view view-title="Tracks">
   <ion-content>
-  	<button class="button button-icon" ng-click="newTrack()">
-    	<i class="icon ion-compose"></i>
-    </button>
-  	<button class="button button-icon" ng-click="refreshTracks()">
-    	Refresh
-    </button>
+  	<ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()">
+    </ion-refresher>
     <ion-list>
       <ion-item ng-repeat="track in tracks" href="#/app/tracks/{{track.id}}" ng-click="selectTrack(track)">
         {{track.startTime}}
