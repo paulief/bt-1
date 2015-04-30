@@ -53,6 +53,8 @@ angular.module('btControllers', [])
   $scope.refreshTracks = function() {
 	  console.log(btDataService.getAllTracks(setTracks));
 	  setTracks(btDataService.getAllTracks(setTracks));
+    // Stop the ion-refresher from spinning
+    $scope.$broadcast('scroll.refreshComplete');
   };
 
 
