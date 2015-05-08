@@ -33,8 +33,8 @@ angular.module('btControllers', [])
   };
 })
 
-.controller('TrackingCtrl', ['$scope', '$http', 'btDataService', 'btTimerService', 
-  function($scope, $http, btDataService, btTimerService) {
+.controller('TrackingCtrl', ['$scope', '$http', 'btDataService', 'btTimerService', 'btTrackPostProcessing', 
+  function($scope, $http, btDataService, btTimerService, btTrackPostProcessing) {
 
   console.log("Controller loaded");
 
@@ -87,9 +87,17 @@ angular.module('btControllers', [])
   $scope.stopAndSaveCurrentTrack = function() {
     btTimerService.stopFunc();
     var newTrackToSave = btDataService.getActiveTrack();
-    btDataService.saveNewTrack(newTrackToSave);
+    newTrackToSave.displayDate = btTrackPostProcessing.formatDisplayDate(newTrackToSave.startTime);
+    console.log(newTrackToSave);
+
+    var processedTrackPromise = btTrackPostProcessing.geocodeTrack(newTrackToSave);
+
+    processedTrackPromise.then(function(city) {
+      newTrackToSave.startLoc = city;
+      btDataService.saveNewTrack(newTrackToSave);
+      $scope.tracks.push(newTrackToSave);
+    });
     //setTracks(btDataService.getAllTracks(setTracks));
-    $scope.tracks.push(newTrackToSave);
   }
 
   var triggerLocationCheck = function() {

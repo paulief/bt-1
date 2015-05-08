@@ -79,3 +79,44 @@ btServices.factory('btGeoService', function() {
 		}
 	}
 });
+
+btServices.factory('btTrackPostProcessing', ['$q', function($q) {
+	var geocoder = new google.maps.Geocoder();
+	return {
+		geocodeTrack: function(unprocessedTrack) {
+			var lat = unprocessedTrack.trackEvents[0].lat;
+			var lon = unprocessedTrack.trackEvents[0].lon;
+			var latLng = new google.maps.LatLng(lat, lon);
+
+			var deferred = $q.defer();
+			geocoder.geocode({'latLng': latLng}, function(results, status) {
+				var cityName, state_abbrev;
+
+				if(status == google.maps.GeocoderStatus.OK) {
+					console.log(results);
+					//loop through all the components of the most specific address returned
+					angular.forEach(results[0].address_components, function(addr_component, index) {
+						if (addr_component.types[0] == "locality") { //this is the town name component
+							//unprocessedTrack.town_name = addr_component.long_name;
+							cityName = addr_component.long_name;
+							console.log(cityName);
+						} else if (addr_component.types[0] == "administrative_area_level_1") { //state component
+							//unprocessedTrack.state_abbrev = addr_component.short_name;
+							state_abbrev = addr_component.short_name;
+						};
+					});
+				} else {
+					console.log("geocode failed");
+				};
+				var fullLocName = cityName + ', ' + state_abbrev;
+				deferred.resolve(fullLocName);
+			});
+			return deferred.promise; //now processed
+		},
+		formatDisplayDate: function(timestamp) {
+			var date = new Date(timestamp);
+			var displayDate = date.toDateString();
+			return displayDate;
+		}
+	}
+}]);
