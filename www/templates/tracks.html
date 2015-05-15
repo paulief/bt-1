@@ -1,14 +1,16 @@
 <ion-view view-title="Tracks">
+	
   <ion-content>
   	<ion-refresher pulling-text="Pull to refresh..." on-refresh="refreshTracks()">
     </ion-refresher>
-    <ion-list>
-      <a class="item item-icon-left"
+    <ion-list show-delete="shouldShowDelete" can-delete="true" on-delete="deleteTrack(track, index)">
+      <ion-item class="item item-icon-left"
       	ng-repeat="track in tracks" href="#/app/tracks/{{track.id}}" ng-click="selectTrack(track)">
       	<i class="icon ion-map"></i>
         <h2>{{track.displayDate}}</h2>
         <p>{{track.startLoc}}</p>
-      </a>
+        <ion-delete-button class="ion-minus-circled" ng-click="deleteTrack(track)"></ion-delete-button>
+      </ion-item>
     </ion-list>
   </ion-content>
 </ion-view>

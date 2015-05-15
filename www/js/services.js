@@ -58,7 +58,7 @@ btServices.factory('btDataService', ['$http', function($http) {
 btServices.factory('btTimerService', function() {
   return {
     startFunc: function(func) {
-     this.timer = setInterval(func, 300000);
+     this.timer = setInterval(func, 5000);
      console.log("timer started");
     },
     timer: {},
