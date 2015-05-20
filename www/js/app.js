@@ -53,7 +53,7 @@ angular.module('starter', ['ionic', 'btControllers', 'btServices'])
       views: {
         'menuContent': {
           templateUrl: "templates/tracks.html",
-          controller: 'TrackingCtrl'
+          controller: 'TrackListCtrl'
         }
       }
     })

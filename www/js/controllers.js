@@ -76,7 +76,7 @@ angular.module('btControllers', [])
     processedTrackPromise.then(function(city) {
       newTrackToSave.startLoc = city;
       btDataService.saveNewTrack(newTrackToSave);
-      $scope.tracks.push(newTrackToSave);
+      //$scope.tracks.push(newTrackToSave);
     });
     //setTracks(btDataService.getAllTracks(setTracks));
   }
@@ -111,8 +111,7 @@ angular.module('btControllers', [])
   
 }])
 
-.controller('TrackListCtrl', ['$scope', '$stateParams', 'btDataService'], 
-  function($scope, btDataService) {
+.controller('TrackListCtrl', ['$scope', 'btDataService', '$timeout', function($scope, btDataService, $timeout) {
     $scope.refreshTracks = function() {
       console.log(btDataService.getAllTracks(setTracks));
       setTracks(btDataService.getAllTracks(setTracks));
@@ -120,9 +119,9 @@ angular.module('btControllers', [])
       $scope.$broadcast('scroll.refreshComplete');
     };
 
-    $scope.selectTrack = function(track) {
-    console.log(track);
-    btDataService.setActiveTrack(track);
+    //$scope.selectTrack = function(track) {
+    //console.log(track);
+    //btDataService.setActiveTrack(track);
 
     var setTracks = function(data) {
       if (data) {
@@ -137,8 +136,10 @@ angular.module('btControllers', [])
     //passing setTracks as a callback
     setTracks(btDataService.getAllTracks(setTracks));
 
+    console.log($scope.tracks);
+
     $scope.$root.toggleDeleteButton = function() {
-      $timeout(function(){$scope.shouldShowDelete = !$scope.shouldShowDelete});
+      $scope.shouldShowDelete = !$scope.shouldShowDelete;
       console.log("Toggleing delete to " + $scope.shouldShowDelete);
       $scope.$root.editButtonText = ($scope.shouldShowDelete ? "Done" : "Edit");
     };
@@ -150,9 +151,10 @@ angular.module('btControllers', [])
     $scope.deleteTrack = function(track, index) {
       console.log(track);
     };
-  };
+  }]) 
+  
 
-  })
+  
 
 .controller('TrackDispCtrl', ['$scope', '$stateParams', 'btDataService', function($scope, $stateParams, btDataService) {
 	console.log(btDataService.getActiveTrack());
