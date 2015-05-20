@@ -33,14 +33,33 @@ angular.module('btControllers', [])
   };
 })
 
-.controller('TrackingCtrl', ['$scope', '$http', '$timeout', 'btDataService', 'btTimerService', 'btTrackPostProcessing', 
-  function($scope, $http, $timeout, btDataService, btTimerService, btTrackPostProcessing) {
+.controller('TrackingCtrl', ['$scope', '$http', 'btDataService', 'btTimerService', 'btTrackPostProcessing', 
+  function($scope, $http, btDataService, btTimerService, btTrackPostProcessing) {
 
   console.log("Controller loaded");
 
   var currentTrack;
 
+  var setTracks = function(data) {
+    if (data) {
+    	$scope.tracks = data;
+      console.log(data);
+    } else {
+    	$scope.tracks = [];
+    }
+  };
   
+  //Not used - ideally every time the template loads this is called
+  $scope.refreshTracks = function() {
+	  console.log(btDataService.getAllTracks(setTracks));
+	  setTracks(btDataService.getAllTracks(setTracks));
+    // Stop the ion-refresher from spinning
+    $scope.$broadcast('scroll.refreshComplete');
+  };
+
+
+  //passing setTracks as a callback
+  setTracks(btDataService.getAllTracks(setTracks));
   
   $scope.newTrack = function() {
 	  console.log(new Date().getTime());
@@ -82,7 +101,7 @@ angular.module('btControllers', [])
   }
 
   var triggerLocationCheck = function() {
-    navigator.geolocation.getCurrentPosition(recordLocation, handleLocError, {maximumAge:300000}); //need to refactor this into service that passes back promise
+    navigator.geolocation.getCurrentPosition(recordLocation, handleLocError, {maximumAge:300000});
   }
 
   var recordLocation = function(loc) {
@@ -109,50 +128,11 @@ angular.module('btControllers', [])
     };
   };
   
-}])
-
-.controller('TrackListCtrl', ['$scope', '$stateParams', 'btDataService'], 
-  function($scope, btDataService) {
-    $scope.refreshTracks = function() {
-      console.log(btDataService.getAllTracks(setTracks));
-      setTracks(btDataService.getAllTracks(setTracks));
-      // Stop the ion-refresher from spinning
-      $scope.$broadcast('scroll.refreshComplete');
-    };
-
-    $scope.selectTrack = function(track) {
-    console.log(track);
-    btDataService.setActiveTrack(track);
-
-    var setTracks = function(data) {
-      if (data) {
-        $scope.tracks = data;
-        console.log(data);
-      } else {
-        $scope.tracks = [];
-      }
-    };
-  
-
-    //passing setTracks as a callback
-    setTracks(btDataService.getAllTracks(setTracks));
-
-    $scope.$root.toggleDeleteButton = function() {
-      $timeout(function(){$scope.shouldShowDelete = !$scope.shouldShowDelete});
-      console.log("Toggleing delete to " + $scope.shouldShowDelete);
-      $scope.$root.editButtonText = ($scope.shouldShowDelete ? "Done" : "Edit");
-    };
-
-    //NEED TO BREAK THIS OUT TO SEPARATE CONTROLLER-->
-    $scope.shouldShowDelete = false;
-    $scope.$root.editButtonText = "Edit";
-
-    $scope.deleteTrack = function(track, index) {
-      console.log(track);
-    };
+  $scope.selectTrack = function(track) {
+	  console.log(track);
+	  btDataService.setActiveTrack(track);
   };
-
-  })
+}])
 
 .controller('TrackDispCtrl', ['$scope', '$stateParams', 'btDataService', function($scope, $stateParams, btDataService) {
 	console.log(btDataService.getActiveTrack());
