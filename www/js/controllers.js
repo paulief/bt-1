@@ -48,8 +48,8 @@ angular.module('btControllers', [])
 	  
 	  $scope.tracks.push(newTrackToAdd);
 	  btDataService.saveAllTracks($scope.tracks);
-	  console.log(btDataService.getAllTracks(setTracks));
-	  setTracks(btDataService.getAllTracks(setTracks));
+	  console.log(btDataService.getAllTracks());
+	  setTracks(btDataService.getAllTracks());
   };
 
   $scope.startNewTrack = function() {
@@ -73,12 +73,17 @@ angular.module('btControllers', [])
 
     var processedTrackPromise = btTrackPostProcessing.geocodeTrack(newTrackToSave);
 
-    processedTrackPromise.then(function(city) {
-      newTrackToSave.startLoc = city;
-      btDataService.saveNewTrack(newTrackToSave);
-      //$scope.tracks.push(newTrackToSave);
-    });
-    //setTracks(btDataService.getAllTracks(setTracks));
+    if (processedTrackPromise) {
+      processedTrackPromise.then(function(city) {
+        newTrackToSave.startLoc = city;
+        //$scope.tracks.push(newTrackToSave);
+      });
+    } else {
+      newTrackToSave.startLoc = "No locations tracked";
+    }
+
+    btDataService.saveNewTrack(newTrackToSave);
+    //setTracks(btDataService.getAllTracks());
   }
 
   var triggerLocationCheck = function() {
@@ -113,15 +118,15 @@ angular.module('btControllers', [])
 
 .controller('TrackListCtrl', ['$scope', 'btDataService', '$timeout', function($scope, btDataService, $timeout) {
     $scope.refreshTracks = function() {
-      console.log(btDataService.getAllTracks(setTracks));
-      setTracks(btDataService.getAllTracks(setTracks));
+      console.log(btDataService.getAllTracks());
+      setTracks(btDataService.getAllTracks());
       // Stop the ion-refresher from spinning
       $scope.$broadcast('scroll.refreshComplete');
     };
 
-    //$scope.selectTrack = function(track) {
-    //console.log(track);
-    //btDataService.setActiveTrack(track);
+    $scope.selectTrack = function(track) {
+      btDataService.setActiveTrack(track);
+    }
 
     var setTracks = function(data) {
       if (data) {
@@ -133,8 +138,7 @@ angular.module('btControllers', [])
     };
   
 
-    //passing setTracks as a callback
-    setTracks(btDataService.getAllTracks(setTracks));
+    setTracks(btDataService.getAllTracks());
 
     console.log($scope.tracks);
 
@@ -149,7 +153,7 @@ angular.module('btControllers', [])
     $scope.$root.editButtonText = "Edit";
 
     $scope.deleteTrack = function(track, index) {
-      console.log(track);
+      btDataService.deleteTrack(track);
     };
   }]) 
   
