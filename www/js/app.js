@@ -70,3 +70,6 @@ angular.module('starter', ['ionic', 'btControllers', 'btServices'])
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/track');
 });
+
+var controllers = angular.module('btControllers', []);
+var services = angular.module('btServices', []);

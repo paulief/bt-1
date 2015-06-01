@@ -1,40 +1,6 @@
-controllers
+'use strict';
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
-  // Form data for the login modal
-  $scope.loginData = {};
-
-  // Create the login modal that we will use later
-  $ionicModal.fromTemplateUrl('templates/login.html', {
-    scope: $scope
-  }).then(function(modal) {
-    $scope.modal = modal;
-  });
-
-  // Triggered in the login modal to close it
-  $scope.closeLogin = function() {
-    $scope.modal.hide();
-  };
-
-  // Open the login modal
-  $scope.login = function() {
-    $scope.modal.show();
-  };
-
-  // Perform the login action when the user submits the login form
-  $scope.doLogin = function() {
-    console.log('Doing login', $scope.loginData);
-
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
-    $timeout(function() {
-      $scope.closeLogin();
-    }, 1000);
-  };
-})
-
-/**
-.controller('TrackingCtrl', ['$scope', '$http', '$timeout', 'btDataService', 'btTimerService', 'btTrackPostProcessing', 
+controllers.controller('TrackingCtrl', ['$scope', '$http', '$timeout', 'btDataService', 'btTimerService', 'btTrackPostProcessing', 
   function($scope, $http, $timeout, btDataService, btTimerService, btTrackPostProcessing) {
 
   console.log("Controller loaded");
@@ -115,56 +81,4 @@ controllers
     };
   };
   
-}]) */
-
-.controller('TrackListCtrl', ['$scope', 'btDataService', '$timeout', function($scope, btDataService, $timeout) {
-    $scope.refreshTracks = function() {
-      console.log(btDataService.getAllTracks());
-      setTracks(btDataService.getAllTracks());
-      // Stop the ion-refresher from spinning
-      $scope.$broadcast('scroll.refreshComplete');
-    };
-
-    $scope.selectTrack = function(track) {
-      btDataService.setActiveTrack(track);
-    }
-
-    var setTracks = function(data) {
-      if (data) {
-        $scope.tracks = data;
-        console.log(data);
-      } else {
-        $scope.tracks = [];
-      }
-    };
-  
-
-    setTracks(btDataService.getAllTracks());
-
-    console.log($scope.tracks);
-
-    $scope.$root.toggleDeleteButton = function() {
-      $scope.shouldShowDelete = !$scope.shouldShowDelete;
-      console.log("Toggleing delete to " + $scope.shouldShowDelete);
-      $scope.$root.editButtonText = ($scope.shouldShowDelete ? "Done" : "Edit");
-    };
-
-    //NEED TO BREAK THIS OUT TO SEPARATE CONTROLLER-->
-    $scope.shouldShowDelete = false;
-    $scope.$root.editButtonText = "Edit";
-
-    $scope.deleteTrack = function(track, index) {
-      btDataService.deleteTrack(track);
-    };
-  }]) 
-  
-
-  
-
-.controller('TrackDispCtrl', ['$scope', '$stateParams', 'btDataService', function($scope, $stateParams, btDataService) {
-	console.log(btDataService.getActiveTrack());
-	
-	$scope.selectedTrack = btDataService.getActiveTrack();
-	
-	
 }]);
